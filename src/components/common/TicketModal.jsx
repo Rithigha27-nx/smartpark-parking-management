@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Printer, CheckCircle, Navigation, QrCode } from 'lucide-react';
-import { formatDateTime } from '../../utils/formatters';
+import { formatDateTime, formatPlateDisplay, formatOperatorName } from '../../utils/formatters';
 import { useParking } from '../../context/ParkingContext';
 
 export default function TicketModal({ isOpen, onClose, allocationData }) {
@@ -60,7 +60,7 @@ export default function TicketModal({ isOpen, onClose, allocationData }) {
           <div className="space-y-2 text-xs border-b border-dashed border-[#334155] pb-4">
             <div className="flex justify-between py-1">
               <span className="text-[#94A3B8]">Registration Number:</span>
-              <span className="font-mono font-bold text-[#F8FAFC]">{vehicle.registrationNumber}</span>
+              <span className="font-mono font-bold text-[#F8FAFC]">{formatPlateDisplay(vehicle.registrationNumber)}</span>
             </div>
             <div className="flex justify-between py-1">
               <span className="text-[#94A3B8]">Vehicle Type:</span>
@@ -82,7 +82,7 @@ export default function TicketModal({ isOpen, onClose, allocationData }) {
             )}
             <div className="flex justify-between py-1">
               <span className="text-[#94A3B8]">Operator on Duty:</span>
-              <span className="text-[#F8FAFC]">{settings.operatorName}</span>
+              <span className="text-[#F8FAFC]">{formatOperatorName(settings.operatorName)}</span>
             </div>
           </div>
 

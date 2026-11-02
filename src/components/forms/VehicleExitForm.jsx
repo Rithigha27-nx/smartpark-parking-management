@@ -21,6 +21,7 @@ import {
   getDurationMinutes,
   formatCurrency,
   normalizePlate,
+  formatPlateDisplay,
 } from '../../utils/formatters';
 import { calculateParkingFee } from '../../utils/feeCalculator';
 import ReceiptModal from '../common/ReceiptModal';
@@ -150,7 +151,7 @@ export default function VehicleExitForm() {
                 }}
                 className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#1E293B] hover:bg-[#1E3A5F] hover:text-[#BFDBFE] border border-[#334155] text-[#CBD5E1] transition-colors"
               >
-                {veh.slotId}: {veh.registrationNumber}
+                {veh.slotId}: {formatPlateDisplay(veh.registrationNumber)}
               </button>
             ))}
           </div>
@@ -187,7 +188,7 @@ export default function VehicleExitForm() {
               <div className="p-3 bg-[#1E293B] rounded-lg border border-[#334155]">
                 <div className="text-[11px] text-[#94A3B8] font-medium">Vehicle Registration</div>
                 <div className="font-mono font-bold text-base text-[#F8FAFC] mt-0.5">
-                  {selectedVehicle.registrationNumber}
+                  {formatPlateDisplay(selectedVehicle.registrationNumber)}
                 </div>
                 <div className="text-[11px] text-[#CBD5E1] mt-1 flex items-center gap-1">
                   <Car className="w-3 h-3" />

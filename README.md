@@ -13,7 +13,7 @@
 
 ![SmartPark dashboard](screenshots/dashboard.jpg)
 
-*The dashboard summarizes facility occupancy, available bays, queued vehicles, and recent demo activity.*
+*The dashboard summarizes facility occupancy, available bays, queued vehicles, and recent activity.*
 
 ## Project overview
 
@@ -40,7 +40,7 @@ This repository contains a **client-side demonstration**, not a production parki
 - Waiting-list view with capacity, add/cancel actions, wait-time summaries, and manual admission.
 - Vehicle and transaction lookup, filters, sortable history, and CSV export.
 - Analytics and DSA insights, including hash-table statistics and selected operation measurements.
-- Browser `localStorage` persistence for slots, queue contents, transactions, and settings; sample records seed a new browser profile.
+- Browser `localStorage` persistence for slots, queue contents, transactions, and settings; default records seed a new browser profile, while existing browser data takes precedence.
 
 ## Technology
 
@@ -167,7 +167,7 @@ There is currently no automated test script in `package.json`.
 - Queue screens and operations use React array state; the custom circular queue class is not the active queue implementation.
 - Some analytics use fixed fallbacks or estimates rather than a complete persisted event history.
 - DSA panel heap counts are estimated, and queue comparisons are descriptive rather than instrumented.
-- Seed registrations are visibly marked as sample data, and contact numbers are omitted from source fixtures. The dataset is illustrative, not real facility operations.
+- The 17 parked-vehicle defaults are generated illustrative records with generic driver labels and no contact details. The queue and transaction defaults reproduce reviewed screenshot records; unshown driver and contact fields are omitted. These are frontend reference records, not live facility operations.
 - No automated tests are configured yet.
 
 ## Future enhancements

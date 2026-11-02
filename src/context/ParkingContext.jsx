@@ -1,18 +1,30 @@
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import { INITIAL_SLOTS } from '../data/initialSlots';
 import {
-  SAMPLE_VEHICLES,
-  SAMPLE_WAITING_QUEUE,
-  SAMPLE_TRANSACTIONS,
-  getSampleDriverFromLegacy,
-  getSampleRegistrationFromLegacy,
+  DEFAULT_VEHICLES,
+  DEFAULT_WAITING_QUEUE,
+  DEFAULT_TRANSACTIONS,
+  DEFAULT_RECENT_ACTIVITIES,
 } from '../data/demoData';
 import { MinHeap } from '../dsa/MinHeap';
 import { CircularQueue } from '../dsa/CircularQueue';
 import { HashTable } from '../dsa/HashTable';
 import { MergeSort } from '../dsa/MergeSort';
 import { calculateParkingFee, DEFAULT_RATES } from '../utils/feeCalculator';
-import { getDurationMinutes, normalizePlate, formatCurrency } from '../utils/formatters';
+import {
+  getDurationMinutes,
+  normalizePlate,
+  formatCurrency,
+  formatOperatorName,
+} from '../utils/formatters';
 
 const ParkingContext = createContext(null);
 
@@ -51,10 +63,7 @@ export function ParkingProvider({ children }) {
       return {
         ...DEFAULT_SETTINGS,
         ...savedSettings,
-        operatorName:
-          !savedSettings.operatorName || savedSettings.operatorName === 'Demo Operator'
-            ? DEFAULT_SETTINGS.operatorName
-            : savedSettings.operatorName,
+        operatorName: savedSettings.operatorName || DEFAULT_SETTINGS.operatorName,
       };
     } catch {
       return DEFAULT_SETTINGS;
@@ -67,34 +76,15 @@ export function ParkingProvider({ children }) {
       const saved = localStorage.getItem(STORAGE_KEYS.SLOTS);
       if (saved) {
         const savedSlots = JSON.parse(saved);
-        if (Array.isArray(savedSlots)) {
-          return savedSlots.map((slot) => {
-            if (!slot.vehicle) return slot;
-
-            const registrationNumber = getSampleRegistrationFromLegacy(
-              slot.vehicle.registrationNumber
-            );
-            const driverName = getSampleDriverFromLegacy(slot.vehicle.driverName);
-            if (!registrationNumber && !driverName) return slot;
-
-            return {
-              ...slot,
-              vehicle: {
-                ...slot.vehicle,
-                ...(registrationNumber && { registrationNumber }),
-                ...(driverName && { driverName }),
-              },
-            };
-          });
-        }
+        if (Array.isArray(savedSlots)) return savedSlots;
         return savedSlots;
       }
     } catch {
       // ignore
     }
-    // Initialize sample vehicles on first run.
+    // Initialize the default occupied-bay distribution on first run.
     const baseSlots = JSON.parse(JSON.stringify(INITIAL_SLOTS));
-    SAMPLE_VEHICLES.forEach((veh) => {
+    DEFAULT_VEHICLES.forEach((veh) => {
       const slot = baseSlots.find((s) => s.id === veh.slotId);
       if (slot) {
         slot.status = 'occupied';
@@ -110,27 +100,13 @@ export function ParkingProvider({ children }) {
       const saved = localStorage.getItem(STORAGE_KEYS.QUEUE);
       if (saved) {
         const savedQueue = JSON.parse(saved);
-        if (Array.isArray(savedQueue)) {
-          return savedQueue.map((vehicle) => {
-            const registrationNumber = getSampleRegistrationFromLegacy(
-              vehicle.registrationNumber
-            );
-            const driverName = getSampleDriverFromLegacy(vehicle.driverName);
-            if (!registrationNumber && !driverName) return vehicle;
-
-            return {
-              ...vehicle,
-              ...(registrationNumber && { registrationNumber }),
-              ...(driverName && { driverName }),
-            };
-          });
-        }
+        if (Array.isArray(savedQueue)) return savedQueue;
         return savedQueue;
       }
     } catch {
       // ignore
     }
-    return SAMPLE_WAITING_QUEUE;
+    return DEFAULT_WAITING_QUEUE;
   });
 
   // Transactions History
@@ -139,87 +115,57 @@ export function ParkingProvider({ children }) {
       const saved = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
       if (saved) {
         const savedTransactions = JSON.parse(saved);
-        if (Array.isArray(savedTransactions)) {
-          return savedTransactions.map((transaction) => {
-            const registrationNumber = getSampleRegistrationFromLegacy(
-              transaction.registrationNumber
-            );
-            const isLegacySampleTransaction =
-              /^DEMO-EXIT-\d{2}$/.test(transaction.registrationNumber || '') &&
-              transaction.operator === 'Demo Operator';
-            if (!registrationNumber && !isLegacySampleTransaction) return transaction;
-
-            return {
-              ...transaction,
-              ...(registrationNumber && { registrationNumber }),
-              ...(isLegacySampleTransaction && {
-                operator: DEFAULT_SETTINGS.operatorName,
-              }),
-            };
-          });
-        }
+        if (Array.isArray(savedTransactions)) return savedTransactions;
         return savedTransactions;
       }
     } catch {
       // ignore
     }
-    return SAMPLE_TRANSACTIONS;
+    return DEFAULT_TRANSACTIONS;
   });
 
   // Notifications / Activity Alerts
   const [notifications, setNotifications] = useState([]);
-  const [recentActivities, setRecentActivities] = useState([
-    {
-      id: 'act-1',
-      type: 'ENTRY',
-      title: 'Vehicle Allocated',
-      description: 'SAMPLE · TN 23 AB 1012 assigned to Slot B08 (Distance: 48m)',
-      timestamp: new Date(Date.now() - 25 * 60000).toISOString(),
-    },
-    {
-      id: 'act-2',
-      type: 'EXIT',
-      title: 'Vehicle Exited',
-      description: 'SAMPLE · TN 23 AB 2001 cleared Slot A02. Fee ₹80 collected via UPI.',
-      timestamp: new Date(Date.now() - 40 * 60000).toISOString(),
-    },
-    {
-      id: 'act-3',
-      type: 'QUEUE',
-      title: 'Vehicle Enqueued',
-      description: 'Lavanya Natarajan joined the sample waiting queue at Pos #1',
-      timestamp: new Date(Date.now() - 18 * 60000).toISOString(),
-    },
-  ]);
+  const [recentActivities, setRecentActivities] = useState(DEFAULT_RECENT_ACTIVITIES);
+
+  const persistedState = useRef({ slots, waitingQueueItems, transactions, settings });
 
   // Persist state to localStorage
   useEffect(() => {
+    if (persistedState.current.slots === slots) return;
     try {
       localStorage.setItem(STORAGE_KEYS.SLOTS, JSON.stringify(slots));
+      persistedState.current.slots = slots;
     } catch (e) {
       console.error('Error saving slots to localStorage', e);
     }
   }, [slots]);
 
   useEffect(() => {
+    if (persistedState.current.waitingQueueItems === waitingQueueItems) return;
     try {
       localStorage.setItem(STORAGE_KEYS.QUEUE, JSON.stringify(waitingQueueItems));
+      persistedState.current.waitingQueueItems = waitingQueueItems;
     } catch (e) {
       console.error('Error saving queue to localStorage', e);
     }
   }, [waitingQueueItems]);
 
   useEffect(() => {
+    if (persistedState.current.transactions === transactions) return;
     try {
       localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
+      persistedState.current.transactions = transactions;
     } catch (e) {
       console.error('Error saving transactions to localStorage', e);
     }
   }, [transactions]);
 
   useEffect(() => {
+    if (persistedState.current.settings === settings) return;
     try {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+      persistedState.current.settings = settings;
     } catch (e) {
       console.error('Error saving settings to localStorage', e);
     }
@@ -234,7 +180,7 @@ export function ParkingProvider({ children }) {
     const table = new HashTable(31);
     slots.forEach((s) => {
       if (s.status === 'occupied' && s.vehicle) {
-        table.insert(s.vehicle.registrationNumber, {
+        table.insert(normalizePlate(s.vehicle.registrationNumber), {
           ...s.vehicle,
           slotId: s.id,
           slotType: s.type,
@@ -552,7 +498,7 @@ export function ParkingProvider({ children }) {
         durationMinutes: durationMinutes,
         fee: feeBreakdown.totalFee,
         paymentMethod: paymentMethod,
-        operator: settings.operatorName,
+        operator: formatOperatorName(settings.operatorName),
       };
 
       // Add to transactions
@@ -617,11 +563,11 @@ export function ParkingProvider({ children }) {
         logActivity(
           'QUEUE',
           `Auto-Allocation from Queue`,
-          `Waiting vehicle ${candidate.registrationNumber} automatically allocated to freed Slot ${slotId}!`
+          `Waiting vehicle ${normalizePlate(candidate.registrationNumber)} automatically allocated to freed Slot ${slotId}!`
         );
 
         addNotification(
-          `Freed Slot ${slotId} automatically allocated to waiting vehicle ${candidate.registrationNumber}!`,
+          `Freed Slot ${slotId} automatically allocated to waiting vehicle ${normalizePlate(candidate.registrationNumber)}!`,
           'success',
           8000
         );
@@ -694,16 +640,16 @@ export function ParkingProvider({ children }) {
     setSlots(emptySlots);
     setWaitingQueueItems([]);
     setTransactions([]);
-    setRecentActivities([]);
+    setRecentActivities(DEFAULT_RECENT_ACTIVITIES);
     addNotification('System reset to blank initial state.', 'info');
   }, [addNotification]);
 
   /**
-   * Reset data to realistic demo operational state
+   * Load the default operational records
    */
-  const loadSampleData = useCallback(() => {
+  const loadRestoredData = useCallback(() => {
     const baseSlots = JSON.parse(JSON.stringify(INITIAL_SLOTS));
-    SAMPLE_VEHICLES.forEach((veh) => {
+    DEFAULT_VEHICLES.forEach((veh) => {
       const slot = baseSlots.find((s) => s.id === veh.slotId);
       if (slot) {
         slot.status = 'occupied';
@@ -711,9 +657,14 @@ export function ParkingProvider({ children }) {
       }
     });
     setSlots(baseSlots);
-    setWaitingQueueItems(SAMPLE_WAITING_QUEUE);
-    setTransactions(SAMPLE_TRANSACTIONS);
-    addNotification('Sample parking records loaded successfully.', 'success');
+    setWaitingQueueItems(DEFAULT_WAITING_QUEUE);
+    setTransactions(DEFAULT_TRANSACTIONS);
+    setSettings((current) => ({
+      ...current,
+      operatorName: DEFAULT_SETTINGS.operatorName,
+    }));
+    setRecentActivities([]);
+    addNotification('Restored SmartPark records loaded successfully.', 'success');
   }, [addNotification]);
 
   // -------------------------------------------------------------
@@ -781,7 +732,7 @@ export function ParkingProvider({ children }) {
     addNotification,
     removeNotification,
     resetToEmpty,
-    loadSampleData,
+    loadRestoredData,
   };
 
   return <ParkingContext.Provider value={value}>{children}</ParkingContext.Provider>;

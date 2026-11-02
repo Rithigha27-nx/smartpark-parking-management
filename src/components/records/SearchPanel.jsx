@@ -18,6 +18,7 @@ import {
   getDurationMinutes,
   formatCurrency,
   normalizePlate,
+  formatPlateDisplay,
 } from '../../utils/formatters';
 import { calculateParkingFee } from '../../utils/feeCalculator';
 
@@ -176,7 +177,7 @@ export default function SearchPanel() {
                       Vehicle Registration Plate
                     </span>
                     <div className="font-mono font-bold text-xl text-[#F8FAFC] mt-0.5">
-                      {result.vehicle.registrationNumber}
+                      {formatPlateDisplay(result.vehicle.registrationNumber)}
                     </div>
                   </div>
                   <div>

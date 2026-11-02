@@ -12,12 +12,26 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { useParking } from '../context/ParkingContext';
+import { formatOperatorName } from '../utils/formatters';
 
 export default function SettingsPage() {
-  const { settings, setSettings, loadSampleData, resetToEmpty, addNotification } = useParking();
+  const { settings, setSettings, loadRestoredData, resetToEmpty, addNotification } = useParking();
 
-  const [formSettings, setFormSettings] = useState({ ...settings });
+  const [formSettings, setFormSettings] = useState({
+    ...settings,
+    operatorName: formatOperatorName(settings.operatorName),
+  });
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  const handleLoadRestoredData = () => {
+    if (
+      window.confirm(
+        'Replace the current parking, queue, and transaction records with the restored reference records? The operator will be set to Arjun Kumar.'
+      )
+    ) {
+      loadRestoredData();
+    }
+  };
 
   const handleInputChange = (field, value) => {
     setFormSettings((prev) => ({
@@ -241,25 +255,25 @@ export default function SettingsPage() {
         </div>
       </form>
 
-      {/* Section 4: Sample Data & Reset Management */}
+      {/* Section 4: Reference Data & Reset Management */}
       <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
         <div className="flex items-center gap-2 pb-3 border-b border-slate-200">
           <Database className="w-4 h-4 text-purple-600" />
-          <h2 className="text-sm font-semibold text-slate-900">Sample Data & Reset Controls</h2>
+          <h2 className="text-sm font-semibold text-slate-900">Reference Data & Reset Controls</h2>
         </div>
 
         <p className="text-xs text-slate-500">
-          Load sample vehicle records to explore Min-Heap allocation, Hash Table lookup, and waiting-queue workflows.
+          Load the restored queue and transaction records with the existing parked-vehicle distribution.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
           <button
             type="button"
-            onClick={loadSampleData}
+            onClick={handleLoadRestoredData}
             className="w-full sm:w-auto py-2.5 px-4 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 font-medium text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
           >
             <Sparkles className="w-4 h-4 text-blue-600" />
-            <span>Load Sample Operational Data (17 Parked, 2 Queued, 8 Txns)</span>
+            <span>Load Restored Records (17 Parked, 2 Queued, 8 Transactions)</span>
           </button>
 
           <button

@@ -74,10 +74,11 @@ export function getDurationMinutes(startTimeIso, endTimeIso = new Date().toISOSt
 
 /**
  * Normalizes a vehicle identifier by removing separators and uppercasing it.
- * Example: "sample-TN23AB1001" becomes "SAMPLETN23AB1001".
+ * Legacy sample prefixes are ignored so existing browser records remain searchable.
  */
 export function normalizePlate(plate) {
-  return (plate || '').toUpperCase().trim().replace(/[^A-Z0-9]/g, '');
+  const normalized = (plate || '').toUpperCase().trim().replace(/[^A-Z0-9]/g, '');
+  return normalized.replace(/^SAMPLE(?=[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$)/, '');
 }
 
 /**
@@ -85,17 +86,13 @@ export function normalizePlate(plate) {
  */
 export function formatPlateDisplay(plate) {
   const norm = normalizePlate(plate);
-  const sampleMatch = norm.match(/^SAMPLE([A-Z]{2}\d{2}[A-Z]{1,2}\d{4})$/);
-  if (sampleMatch) {
-    const registration = sampleMatch[1].match(/^([A-Z]{2})(\d{2})([A-Z]{1,2})(\d{4})$/);
-    if (registration) {
-      return `SAMPLE · ${registration[1]} ${registration[2]} ${registration[3]} ${registration[4]}`;
-    }
-  }
-
   const match = norm.match(/^([A-Z]{2})(\d{2})([A-Z]{1,2})(\d{4})$/);
   if (match) {
     return `${match[1]} ${match[2]} ${match[3]} ${match[4]}`;
   }
   return norm;
+}
+
+export function formatOperatorName(name) {
+  return name === 'Demo Operator' ? 'Arjun Kumar' : name;
 }

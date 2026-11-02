@@ -19,6 +19,7 @@ import {
   formatDuration,
   getDurationMinutes,
   formatCurrency,
+  formatPlateDisplay,
 } from '../../utils/formatters';
 import { calculateParkingFee } from '../../utils/feeCalculator';
 import StatusBadge from '../common/StatusBadge';
@@ -116,7 +117,7 @@ export default function SlotDetailDrawer({ slot, onClose }) {
               <div className="flex items-center justify-between">
                 <span className="text-slate-500">Plate Number:</span>
                 <span className="font-mono font-bold text-sm text-blue-900 bg-white px-2 py-0.5 rounded border border-blue-300">
-                  {slot.vehicle.registrationNumber}
+                  {formatPlateDisplay(slot.vehicle.registrationNumber)}
                 </span>
               </div>
               <div className="flex items-center justify-between">

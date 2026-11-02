@@ -15,6 +15,9 @@ import {
   formatDateTime,
   formatDuration,
   formatCurrency,
+  formatPlateDisplay,
+  formatOperatorName,
+  normalizePlate,
 } from '../../utils/formatters';
 
 export default function TransactionTable() {
@@ -31,9 +34,10 @@ export default function TransactionTable() {
       if (filterType !== 'ALL' && t.vehicleType !== filterType) {
         return false;
       }
+      const normalizedQuery = normalizePlate(filterQuery);
       if (
         filterQuery &&
-        !t.registrationNumber.toLowerCase().includes(filterQuery.toLowerCase()) &&
+        !normalizePlate(t.registrationNumber).includes(normalizedQuery) &&
         !t.slotId.toLowerCase().includes(filterQuery.toLowerCase()) &&
         !t.id.toLowerCase().includes(filterQuery.toLowerCase())
       ) {
@@ -94,7 +98,7 @@ export default function TransactionTable() {
 
     const rows = sortedData.map((t) => [
       t.id,
-      t.registrationNumber,
+      normalizePlate(t.registrationNumber),
       t.vehicleType,
       t.slotId,
       t.entryTime,
@@ -102,7 +106,7 @@ export default function TransactionTable() {
       t.durationMinutes,
       t.fee,
       t.paymentMethod,
-      t.operator,
+      formatOperatorName(t.operator),
     ]);
 
     const csvContent =
@@ -248,7 +252,7 @@ export default function TransactionTable() {
                     {t.id}
                   </td>
                   <td className="py-3 px-4 font-mono font-bold text-[#F8FAFC]">
-                    {t.registrationNumber}
+                    {formatPlateDisplay(t.registrationNumber)}
                   </td>
                   <td className="py-3 px-4 text-[#CBD5E1]">
                     <span className="flex items-center gap-1">
@@ -277,7 +281,7 @@ export default function TransactionTable() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[#94A3B8]">
-                    {t.operator}
+                    {formatOperatorName(t.operator)}
                   </td>
                 </tr>
               ))}

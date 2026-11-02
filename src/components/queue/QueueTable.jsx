@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useParking } from '../../context/ParkingContext';
 import {
+  formatPlateDisplay,
   formatDateTime,
   formatDuration,
   getDurationMinutes,
@@ -86,7 +87,7 @@ export default function QueueTable({ onManualAdmit }) {
 
                     {/* Plate */}
                     <td className="py-3 px-4 font-mono font-bold text-[#F8FAFC] text-sm">
-                      {item.registrationNumber}
+                      {formatPlateDisplay(item.registrationNumber)}
                     </td>
 
                     {/* Vehicle Type */}

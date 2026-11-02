@@ -1,30 +1,9 @@
 /**
- * Sample operational dataset for SmartPark
- * Vellore Central Parking Facility (VLR-PARK-01)
- * Registration identifiers are synthetic and visibly marked as sample data; contact details are omitted.
+ * Illustrative default records for the SmartPark frontend demonstration.
+ * Generated parked-vehicle entries use generic driver labels and no contact details.
  */
 
-export function getSampleRegistrationFromLegacy(value) {
-  const match = /^DEMO-(PARK|QUEUE|EXIT)-(\d{2})$/.exec(value || '');
-  if (!match) return null;
-
-  const [, category, number] = match;
-  const group = { PARK: 1000, QUEUE: 3000, EXIT: 2000 }[category];
-  return `SAMPLE-TN23AB${group + Number(number)}`;
-}
-
-export function getSampleDriverFromLegacy(value) {
-  const match = /^Demo Driver (\d{2})$/.exec(value || '');
-  if (!match) return null;
-
-  const number = Number(match[1]);
-  if (number === 17) return 'Lavanya Natarajan';
-  if (number === 18) return 'Gokul Prasad';
-  if (number === 19) return 'Queue Visitor 03';
-  return `Driver ${match[1]}`;
-}
-
-export const SAMPLE_VEHICLES = [
+export const DEFAULT_VEHICLES = [
   {
     registrationNumber: "SAMPLE-TN23AB1001",
     vehicleType: "Car",
@@ -214,122 +193,146 @@ export const SAMPLE_VEHICLES = [
   },
 ];
 
-export const SAMPLE_WAITING_QUEUE = [
+export const DEFAULT_WAITING_QUEUE = [
   {
-    registrationNumber: "SAMPLE-TN23AB3001",
-    vehicleType: "Car",
-    driverName: "Lavanya Natarajan",
-    contactNumber: "",
-    isAccessible: false,
-    isReserved: false,
-    enqueuedAt: new Date(Date.now() - 18 * 60000).toISOString(),
-  },
-  {
-    registrationNumber: "SAMPLE-TN23AB3002",
+    registrationNumber: "KA01MK9182",
     vehicleType: "SUV",
-    driverName: "Gokul Prasad",
+    driverName: "Lavanya Natarajan",
     contactNumber: "",
     isAccessible: true,
     isReserved: false,
-    enqueuedAt: new Date(Date.now() - 12 * 60000).toISOString(),
+    enqueuedAt: "2026-10-30T10:07:00+05:30",
+  },
+  {
+    registrationNumber: "TN05PQ3041",
+    vehicleType: "Bike",
+    driverName: "Gokul Prasad",
+    contactNumber: "",
+    isAccessible: false,
+    isReserved: false,
+    enqueuedAt: "2026-10-30T10:13:00+05:30",
   },
 ];
 
-export const SAMPLE_TRANSACTIONS = [
+export const DEFAULT_TRANSACTIONS = [
+  {
+    id: "TXN-VLR-0499",
+    registrationNumber: "TN36YT0098",
+    vehicleType: "Bike",
+    slotId: "B03",
+    entryTime: "2026-10-30T22:35:00+05:30",
+    exitTime: "2026-10-30T22:39:00+05:30",
+    durationMinutes: 4,
+    fee: 0,
+    paymentMethod: "UPI / QR",
+    operator: "Arjun Kumar",
+  },
   {
     id: "TXN-VLR-101",
-    registrationNumber: "SAMPLE-TN23AB2001",
+    registrationNumber: "TN23XY9988",
     vehicleType: "Car",
     slotId: "A02",
-    entryTime: new Date(Date.now() - 260 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 40 * 60000).toISOString(),
+    entryTime: "2026-10-30T05:59:00+05:30",
+    exitTime: "2026-10-30T09:39:00+05:30",
     durationMinutes: 220,
-    fee: 80, // 4 hours * ₹20
+    fee: 80,
     paymentMethod: "UPI",
     operator: "Arjun Kumar",
   },
   {
-    id: "TXN-VLR-102",
-    registrationNumber: "SAMPLE-TN23AB2002",
-    vehicleType: "SUV",
-    slotId: "B03",
-    entryTime: new Date(Date.now() - 300 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 90 * 60000).toISOString(),
-    durationMinutes: 210,
-    fee: 120, // 4 hours * ₹30
-    paymentMethod: "Credit Card",
-    operator: "Arjun Kumar",
-  },
-  {
     id: "TXN-VLR-103",
-    registrationNumber: "SAMPLE-TN23AB2003",
+    registrationNumber: "TN07BW4409",
     vehicleType: "Bike",
     slotId: "A07",
-    entryTime: new Date(Date.now() - 150 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 60 * 60000).toISOString(),
+    entryTime: "2026-10-30T07:49:00+05:30",
+    exitTime: "2026-10-30T09:19:00+05:30",
     durationMinutes: 90,
     fee: 20, // 2 hours * ₹10
     paymentMethod: "Cash",
     operator: "Arjun Kumar",
   },
   {
-    id: "TXN-VLR-104",
-    registrationNumber: "SAMPLE-TN23AB2004",
-    vehicleType: "Car",
-    slotId: "C02",
-    entryTime: new Date(Date.now() - 420 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 180 * 60000).toISOString(),
-    durationMinutes: 240,
-    fee: 80, // 4 hours * ₹20
-    paymentMethod: "UPI",
-    operator: "Arjun Kumar",
-  },
-  {
-    id: "TXN-VLR-105",
-    registrationNumber: "SAMPLE-TN23AB2005",
+    id: "TXN-VLR-102",
+    registrationNumber: "KA03NB1090",
     vehicleType: "SUV",
-    slotId: "B06",
-    entryTime: new Date(Date.now() - 360 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 120 * 60000).toISOString(),
-    durationMinutes: 240,
-    fee: 120, // 4 hours * ₹30
-    paymentMethod: "Debit Card",
+    slotId: "B03",
+    entryTime: "2026-10-30T05:19:00+05:30",
+    exitTime: "2026-10-30T08:49:00+05:30",
+    durationMinutes: 210,
+    fee: 120,
+    paymentMethod: "Credit Card",
     operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-106",
-    registrationNumber: "SAMPLE-TN23AB2006",
+    registrationNumber: "TN23MJ3341",
     vehicleType: "Car",
     slotId: "C05",
-    entryTime: new Date(Date.now() - 200 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 100 * 60000).toISOString(),
+    entryTime: "2026-10-30T06:59:00+05:30",
+    exitTime: "2026-10-30T08:39:00+05:30",
     durationMinutes: 100,
-    fee: 40, // 2 hours * ₹20
+    fee: 40,
     paymentMethod: "UPI",
     operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-107",
-    registrationNumber: "SAMPLE-TN23AB2007",
+    registrationNumber: "TN02DQ9102",
     vehicleType: "Bike",
     slotId: "C07",
-    entryTime: new Date(Date.now() - 180 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 110 * 60000).toISOString(),
+    entryTime: "2026-10-30T07:19:00+05:30",
+    exitTime: "2026-10-30T08:29:00+05:30",
     durationMinutes: 70,
-    fee: 20, // 2 hours * ₹10
+    fee: 20,
     paymentMethod: "Cash",
     operator: "Arjun Kumar",
   },
   {
-    id: "TXN-VLR-108",
-    registrationNumber: "SAMPLE-TN23AB2008",
+    id: "TXN-VLR-105",
+    registrationNumber: "AP39LM1122",
+    vehicleType: "SUV",
+    slotId: "B06",
+    entryTime: "2026-10-30T04:19:00+05:30",
+    exitTime: "2026-10-30T08:19:00+05:30",
+    durationMinutes: 240,
+    fee: 120,
+    paymentMethod: "Debit Card",
+    operator: "Arjun Kumar",
+  },
+  {
+    id: "TXN-VLR-104",
+    registrationNumber: "KL07CE2023",
     vehicleType: "Car",
-    slotId: "B03",
-    entryTime: new Date(Date.now() - 12 * 60000).toISOString(),
-    exitTime: new Date(Date.now() - 8 * 60000).toISOString(),
-    durationMinutes: 4,
-    fee: 0,
+    slotId: "C02",
+    entryTime: "2026-10-30T03:19:00+05:30",
+    exitTime: "2026-10-30T07:19:00+05:30",
+    durationMinutes: 240,
+    fee: 80,
     paymentMethod: "UPI",
     operator: "Arjun Kumar",
+  },
+];
+
+export const DEFAULT_RECENT_ACTIVITIES = [
+  {
+    id: 'act-1',
+    type: 'EXIT',
+    title: 'Vehicle Exited',
+    description: 'TN36YT0098 cleared Slot B03. Fee ₹0 collected via UPI / QR.',
+    timestamp: '2026-10-30T22:39:00+05:30',
+  },
+  {
+    id: 'act-2',
+    type: 'QUEUE',
+    title: 'Vehicle Enqueued',
+    description: 'Gokul Prasad joined the waiting queue at Pos #2',
+    timestamp: '2026-10-30T10:13:00+05:30',
+  },
+  {
+    id: 'act-3',
+    type: 'QUEUE',
+    title: 'Vehicle Enqueued',
+    description: 'Lavanya Natarajan joined the waiting queue at Pos #1',
+    timestamp: '2026-10-30T10:07:00+05:30',
   },
 ];

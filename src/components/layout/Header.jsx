@@ -12,11 +12,12 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useParking } from '../../context/ParkingContext';
-import { normalizePlate, formatPlateDisplay } from '../../utils/formatters';
+import { normalizePlate, formatPlateDisplay, formatOperatorName } from '../../utils/formatters';
 
 export default function Header() {
   const { settings, vehicleHashTable, slots, notifications, removeNotification } = useParking();
   const navigate = useNavigate();
+  const operatorName = formatOperatorName(settings.operatorName);
 
   // Clock in Indian Standard Time (Asia/Kolkata)
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -190,11 +191,11 @@ export default function Header() {
         {/* Operator Profile */}
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-[#1E293B] border border-[#334155] flex items-center justify-center text-[#3B82F6] font-semibold text-xs">
-            {settings.operatorName ? settings.operatorName.charAt(0) : 'A'}
+            {operatorName ? operatorName.charAt(0) : 'A'}
           </div>
           <div className="text-left text-xs">
             <div className="font-medium text-[#F8FAFC] flex items-center gap-1.5">
-              <span>{settings.operatorName}</span>
+              <span>{operatorName}</span>
               <span className="w-2 h-2 rounded-full bg-[#22C55E]" title="Active Shift" />
             </div>
             <div className="text-[10px] text-[#94A3B8]">{settings.operatorRole}</div>

@@ -13,7 +13,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useParking } from '../../context/ParkingContext';
-import { normalizePlate } from '../../utils/formatters';
+import { formatPlateDisplay, normalizePlate } from '../../utils/formatters';
 import TicketModal from '../common/TicketModal';
 
 export default function VehicleEntryForm() {
@@ -111,11 +111,11 @@ export default function VehicleEntryForm() {
   };
 
   // Quick Preset fillers for realistic operator testing
-  const fillSample = (type) => {
+  const fillPreset = (type) => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     if (type === 'ACCESSIBLE') {
       setFormData({
-        registrationNumber: `SAMPLE-TN23AC${randomNum}`,
+        registrationNumber: `TN23AC${randomNum}`,
         vehicleType: 'Car',
         driverName: 'Accessible visitor',
         contactNumber: '',
@@ -124,7 +124,7 @@ export default function VehicleEntryForm() {
       });
     } else if (type === 'VIP') {
       setFormData({
-        registrationNumber: `SAMPLE-TN23RS${randomNum}`,
+        registrationNumber: `TN23RS${randomNum}`,
         vehicleType: 'SUV',
         driverName: 'Reserved visitor',
         contactNumber: '',
@@ -133,7 +133,7 @@ export default function VehicleEntryForm() {
       });
     } else if (type === 'BIKE') {
       setFormData({
-        registrationNumber: `SAMPLE-TN23BK${randomNum}`,
+        registrationNumber: `TN23BK${randomNum}`,
         vehicleType: 'Bike',
         driverName: 'Bike visitor',
         contactNumber: '',
@@ -142,7 +142,7 @@ export default function VehicleEntryForm() {
       });
     } else {
       setFormData({
-        registrationNumber: `SAMPLE-TN23CA${randomNum}`,
+        registrationNumber: `TN23CA${randomNum}`,
         vehicleType: 'Car',
         driverName: 'Car visitor',
         contactNumber: '',
@@ -169,21 +169,21 @@ export default function VehicleEntryForm() {
           <span className="text-[11px] font-mono text-[#94A3B8]">Quick Presets:</span>
           <button
             type="button"
-            onClick={() => fillSample('CAR')}
+            onClick={() => fillPreset('CAR')}
             className="text-[11px] px-2 py-1 bg-[#1E293B] hover:bg-[#334155] rounded text-[#F8FAFC] transition-colors"
           >
             + Standard Car
           </button>
           <button
             type="button"
-            onClick={() => fillSample('ACCESSIBLE')}
+            onClick={() => fillPreset('ACCESSIBLE')}
             className="text-[11px] px-2 py-1 bg-[#1E3A5F] hover:bg-[#254B73] rounded text-[#BFDBFE] transition-colors"
           >
             + Accessible
           </button>
           <button
             type="button"
-            onClick={() => fillSample('VIP')}
+            onClick={() => fillPreset('VIP')}
             className="text-[11px] px-2 py-1 bg-[#3A2D1A] hover:bg-[#4A391E] rounded text-amber-200 transition-colors"
           >
             + VIP Reserved
@@ -226,7 +226,7 @@ export default function VehicleEntryForm() {
               <div className="font-semibold text-sm">Facility at Capacity for Vehicle Category</div>
               <p className="mt-0.5 text-amber-200 leading-relaxed">
                 {queuePrompt.message} Would you like to place vehicle{' '}
-                <strong className="font-mono">{queuePrompt.vehicleData.registrationNumber}</strong> into
+                <strong className="font-mono">{formatPlateDisplay(queuePrompt.vehicleData.registrationNumber)}</strong> into
                 the Circular Waiting Queue?
               </p>
             </div>

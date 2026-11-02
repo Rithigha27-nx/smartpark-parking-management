@@ -11,6 +11,7 @@ import {
   BarChart2,
 } from 'lucide-react';
 import { useParking } from '../../context/ParkingContext';
+import { normalizePlate } from '../../utils/formatters';
 
 export default function DSAPerformancePanel() {
   const { slots, vehicleHashTable, waitingQueueItems, transactions } = useParking();
@@ -24,18 +25,24 @@ export default function DSAPerformancePanel() {
 
     setTimeout(() => {
       // 1. Benchmark: Linear Search vs Hash Table
-      const samplePlates = slots
+      const occupiedPlates = slots
         .filter((s) => s.status === 'occupied' && s.vehicle)
         .map((s) => s.vehicle.registrationNumber);
 
-      const targetPlate = samplePlates.length > 0 ? samplePlates[samplePlates.length - 1] : 'DL-01-AB-1920';
+      const targetPlate =
+        occupiedPlates.length > 0
+          ? normalizePlate(occupiedPlates[occupiedPlates.length - 1])
+          : 'DL-01-AB-1920';
 
       // Linear search on array
       let linearComparisons = 0;
       const t0 = performance.now();
       for (let i = 0; i < slots.length; i++) {
         linearComparisons++;
-        if (slots[i].vehicle && slots[i].vehicle.registrationNumber === targetPlate) {
+        if (
+          slots[i].vehicle &&
+          normalizePlate(slots[i].vehicle.registrationNumber) === targetPlate
+        ) {
           break;
         }
       }

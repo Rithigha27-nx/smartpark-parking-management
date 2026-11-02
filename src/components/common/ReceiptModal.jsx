@@ -1,6 +1,12 @@
 import React from 'react';
 import { X, Printer, CheckCircle, Car, Clock, CreditCard, Sparkles } from 'lucide-react';
-import { formatDateTime, formatDuration, formatCurrency } from '../../utils/formatters';
+import {
+  formatDateTime,
+  formatDuration,
+  formatCurrency,
+  formatPlateDisplay,
+  formatOperatorName,
+} from '../../utils/formatters';
 import { useParking } from '../../context/ParkingContext';
 
 export default function ReceiptModal({ isOpen, onClose, exitData }) {
@@ -38,7 +44,7 @@ export default function ReceiptModal({ isOpen, onClose, exitData }) {
             <div>
               <span className="font-semibold">Queue Optimization Triggered:</span> Freed Bay{' '}
               <strong className="font-mono">{slotId}</strong> was automatically allocated to waiting
-              vehicle <strong className="font-mono">{autoAllocatedVehicle.registrationNumber}</strong>.
+              vehicle <strong className="font-mono">{formatPlateDisplay(autoAllocatedVehicle.registrationNumber)}</strong>.
             </div>
           </div>
         )}
@@ -59,7 +65,7 @@ export default function ReceiptModal({ isOpen, onClose, exitData }) {
             <div>
               <div className="text-[11px] text-[#94A3B8] font-medium">Vehicle Registration</div>
               <div className="font-mono font-bold text-base text-[#F8FAFC]">
-                {transaction.registrationNumber}
+                {formatPlateDisplay(transaction.registrationNumber)}
               </div>
             </div>
             <div className="text-right">
@@ -108,7 +114,7 @@ export default function ReceiptModal({ isOpen, onClose, exitData }) {
             </div>
             <div className="flex justify-between">
               <span className="text-[#94A3B8]">Cashier / Controller:</span>
-              <span className="text-[#F8FAFC]">{transaction.operator}</span>
+              <span className="text-[#F8FAFC]">{formatOperatorName(transaction.operator)}</span>
             </div>
           </div>
 
