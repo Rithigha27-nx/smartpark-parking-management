@@ -55,6 +55,9 @@ export default function DashboardPage() {
               </h1>
               <p className="text-sm sm:text-base text-[#94A3B8] mt-1.5 leading-relaxed">
                 Here's your parking facility overview for today.
+                <span className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-[#60A5FA]">
+                  Sample data
+                </span>
               </p>
             </div>
 

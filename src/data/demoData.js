@@ -1,14 +1,34 @@
 /**
- * Synthetic operational demo dataset for SmartPark
+ * Sample operational dataset for SmartPark
  * Vellore Central Parking Facility (VLR-PARK-01)
- * Uses fictional identifiers and anonymized driver details.
+ * Registration identifiers are synthetic and visibly marked as sample data; contact details are omitted.
  */
 
-export const DEMO_VEHICLES = [
+export function getSampleRegistrationFromLegacy(value) {
+  const match = /^DEMO-(PARK|QUEUE|EXIT)-(\d{2})$/.exec(value || '');
+  if (!match) return null;
+
+  const [, category, number] = match;
+  const group = { PARK: 1000, QUEUE: 3000, EXIT: 2000 }[category];
+  return `SAMPLE-TN23AB${group + Number(number)}`;
+}
+
+export function getSampleDriverFromLegacy(value) {
+  const match = /^Demo Driver (\d{2})$/.exec(value || '');
+  if (!match) return null;
+
+  const number = Number(match[1]);
+  if (number === 17) return 'Lavanya Natarajan';
+  if (number === 18) return 'Gokul Prasad';
+  if (number === 19) return 'Queue Visitor 03';
+  return `Driver ${match[1]}`;
+}
+
+export const SAMPLE_VEHICLES = [
   {
-    registrationNumber: "DEMO-PARK-01",
+    registrationNumber: "SAMPLE-TN23AB1001",
     vehicleType: "Car",
-    driverName: "Demo Driver 01",
+    driverName: "Driver 01",
     contactNumber: "",
     isAccessible: true,
     isReserved: false,
@@ -17,9 +37,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-02",
+    registrationNumber: "SAMPLE-TN23AB1002",
     vehicleType: "SUV",
-    driverName: "Demo Driver 02",
+    driverName: "Driver 02",
     contactNumber: "",
     isAccessible: false,
     isReserved: true,
@@ -28,9 +48,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-03",
+    registrationNumber: "SAMPLE-TN23AB1003",
     vehicleType: "Car",
-    driverName: "Demo Driver 03",
+    driverName: "Driver 03",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -39,9 +59,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-04",
+    registrationNumber: "SAMPLE-TN23AB1004",
     vehicleType: "Car",
-    driverName: "Demo Driver 04",
+    driverName: "Driver 04",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -50,9 +70,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-05",
+    registrationNumber: "SAMPLE-TN23AB1005",
     vehicleType: "Bike",
-    driverName: "Demo Driver 05",
+    driverName: "Driver 05",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -61,9 +81,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-06",
+    registrationNumber: "SAMPLE-TN23AB1006",
     vehicleType: "SUV",
-    driverName: "Demo Driver 06",
+    driverName: "Driver 06",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -72,9 +92,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-07",
+    registrationNumber: "SAMPLE-TN23AB1007",
     vehicleType: "Car",
-    driverName: "Demo Driver 07",
+    driverName: "Driver 07",
     contactNumber: "",
     isAccessible: true,
     isReserved: false,
@@ -83,9 +103,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-08",
+    registrationNumber: "SAMPLE-TN23AB1008",
     vehicleType: "Car",
-    driverName: "Demo Driver 08",
+    driverName: "Driver 08",
     contactNumber: "",
     isAccessible: false,
     isReserved: true,
@@ -94,9 +114,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-09",
+    registrationNumber: "SAMPLE-TN23AB1009",
     vehicleType: "Car",
-    driverName: "Demo Driver 09",
+    driverName: "Driver 09",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -105,9 +125,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-10",
+    registrationNumber: "SAMPLE-TN23AB1010",
     vehicleType: "SUV",
-    driverName: "Demo Driver 10",
+    driverName: "Driver 10",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -116,9 +136,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-11",
+    registrationNumber: "SAMPLE-TN23AB1011",
     vehicleType: "Car",
-    driverName: "Demo Driver 11",
+    driverName: "Driver 11",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -127,9 +147,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-12",
+    registrationNumber: "SAMPLE-TN23AB1012",
     vehicleType: "Bike",
-    driverName: "Demo Driver 12",
+    driverName: "Driver 12",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -138,9 +158,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-13",
+    registrationNumber: "SAMPLE-TN23AB1013",
     vehicleType: "SUV",
-    driverName: "Demo Driver 13",
+    driverName: "Driver 13",
     contactNumber: "",
     isAccessible: false,
     isReserved: true,
@@ -149,9 +169,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-14",
+    registrationNumber: "SAMPLE-TN23AB1014",
     vehicleType: "Car",
-    driverName: "Demo Driver 14",
+    driverName: "Driver 14",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -160,9 +180,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-15",
+    registrationNumber: "SAMPLE-TN23AB1015",
     vehicleType: "Car",
-    driverName: "Demo Driver 15",
+    driverName: "Driver 15",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -171,9 +191,9 @@ export const DEMO_VEHICLES = [
     status: "PARKED",
   },
   {
-    registrationNumber: "DEMO-PARK-16",
+    registrationNumber: "SAMPLE-TN23AB1016",
     vehicleType: "SUV",
-    driverName: "Demo Driver 16",
+    driverName: "Driver 16",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
@@ -181,42 +201,44 @@ export const DEMO_VEHICLES = [
     entryTime: new Date(Date.now() - 35 * 60000).toISOString(),
     status: "PARKED",
   },
+  {
+    registrationNumber: "SAMPLE-TN23AB1017",
+    vehicleType: "Car",
+    driverName: "Driver 17",
+    contactNumber: "",
+    isAccessible: false,
+    isReserved: false,
+    slotId: "B03",
+    entryTime: new Date(Date.now() - 55 * 60000).toISOString(),
+    status: "PARKED",
+  },
 ];
 
-export const DEMO_WAITING_QUEUE = [
+export const SAMPLE_WAITING_QUEUE = [
   {
-    registrationNumber: "DEMO-QUEUE-01",
+    registrationNumber: "SAMPLE-TN23AB3001",
     vehicleType: "Car",
-    driverName: "Demo Driver 17",
+    driverName: "Lavanya Natarajan",
     contactNumber: "",
     isAccessible: false,
     isReserved: false,
     enqueuedAt: new Date(Date.now() - 18 * 60000).toISOString(),
   },
   {
-    registrationNumber: "DEMO-QUEUE-02",
+    registrationNumber: "SAMPLE-TN23AB3002",
     vehicleType: "SUV",
-    driverName: "Demo Driver 18",
+    driverName: "Gokul Prasad",
     contactNumber: "",
     isAccessible: true,
     isReserved: false,
     enqueuedAt: new Date(Date.now() - 12 * 60000).toISOString(),
   },
-  {
-    registrationNumber: "DEMO-QUEUE-03",
-    vehicleType: "Bike",
-    driverName: "Demo Driver 19",
-    contactNumber: "",
-    isAccessible: false,
-    isReserved: false,
-    enqueuedAt: new Date(Date.now() - 6 * 60000).toISOString(),
-  },
 ];
 
-export const DEMO_TRANSACTIONS = [
+export const SAMPLE_TRANSACTIONS = [
   {
     id: "TXN-VLR-101",
-    registrationNumber: "DEMO-EXIT-01",
+    registrationNumber: "SAMPLE-TN23AB2001",
     vehicleType: "Car",
     slotId: "A02",
     entryTime: new Date(Date.now() - 260 * 60000).toISOString(),
@@ -224,11 +246,11 @@ export const DEMO_TRANSACTIONS = [
     durationMinutes: 220,
     fee: 80, // 4 hours * ₹20
     paymentMethod: "UPI",
-    operator: "Demo Operator",
+    operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-102",
-    registrationNumber: "DEMO-EXIT-02",
+    registrationNumber: "SAMPLE-TN23AB2002",
     vehicleType: "SUV",
     slotId: "B03",
     entryTime: new Date(Date.now() - 300 * 60000).toISOString(),
@@ -236,11 +258,11 @@ export const DEMO_TRANSACTIONS = [
     durationMinutes: 210,
     fee: 120, // 4 hours * ₹30
     paymentMethod: "Credit Card",
-    operator: "Demo Operator",
+    operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-103",
-    registrationNumber: "DEMO-EXIT-03",
+    registrationNumber: "SAMPLE-TN23AB2003",
     vehicleType: "Bike",
     slotId: "A07",
     entryTime: new Date(Date.now() - 150 * 60000).toISOString(),
@@ -248,11 +270,11 @@ export const DEMO_TRANSACTIONS = [
     durationMinutes: 90,
     fee: 20, // 2 hours * ₹10
     paymentMethod: "Cash",
-    operator: "Demo Operator",
+    operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-104",
-    registrationNumber: "DEMO-EXIT-04",
+    registrationNumber: "SAMPLE-TN23AB2004",
     vehicleType: "Car",
     slotId: "C02",
     entryTime: new Date(Date.now() - 420 * 60000).toISOString(),
@@ -260,11 +282,11 @@ export const DEMO_TRANSACTIONS = [
     durationMinutes: 240,
     fee: 80, // 4 hours * ₹20
     paymentMethod: "UPI",
-    operator: "Demo Operator",
+    operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-105",
-    registrationNumber: "DEMO-EXIT-05",
+    registrationNumber: "SAMPLE-TN23AB2005",
     vehicleType: "SUV",
     slotId: "B06",
     entryTime: new Date(Date.now() - 360 * 60000).toISOString(),
@@ -272,11 +294,11 @@ export const DEMO_TRANSACTIONS = [
     durationMinutes: 240,
     fee: 120, // 4 hours * ₹30
     paymentMethod: "Debit Card",
-    operator: "Demo Operator",
+    operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-106",
-    registrationNumber: "DEMO-EXIT-06",
+    registrationNumber: "SAMPLE-TN23AB2006",
     vehicleType: "Car",
     slotId: "C05",
     entryTime: new Date(Date.now() - 200 * 60000).toISOString(),
@@ -284,11 +306,11 @@ export const DEMO_TRANSACTIONS = [
     durationMinutes: 100,
     fee: 40, // 2 hours * ₹20
     paymentMethod: "UPI",
-    operator: "Demo Operator",
+    operator: "Arjun Kumar",
   },
   {
     id: "TXN-VLR-107",
-    registrationNumber: "DEMO-EXIT-07",
+    registrationNumber: "SAMPLE-TN23AB2007",
     vehicleType: "Bike",
     slotId: "C07",
     entryTime: new Date(Date.now() - 180 * 60000).toISOString(),
@@ -296,6 +318,18 @@ export const DEMO_TRANSACTIONS = [
     durationMinutes: 70,
     fee: 20, // 2 hours * ₹10
     paymentMethod: "Cash",
-    operator: "Demo Operator",
+    operator: "Arjun Kumar",
+  },
+  {
+    id: "TXN-VLR-108",
+    registrationNumber: "SAMPLE-TN23AB2008",
+    vehicleType: "Car",
+    slotId: "B03",
+    entryTime: new Date(Date.now() - 12 * 60000).toISOString(),
+    exitTime: new Date(Date.now() - 8 * 60000).toISOString(),
+    durationMinutes: 4,
+    fee: 0,
+    paymentMethod: "UPI",
+    operator: "Arjun Kumar",
   },
 ];

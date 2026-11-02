@@ -115,36 +115,36 @@ export default function VehicleEntryForm() {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     if (type === 'ACCESSIBLE') {
       setFormData({
-        registrationNumber: `DEMO-ACCESS-${randomNum}`,
+        registrationNumber: `SAMPLE-TN23AC${randomNum}`,
         vehicleType: 'Car',
-        driverName: 'Demo Accessible Driver',
+        driverName: 'Accessible visitor',
         contactNumber: '',
         isAccessible: true,
         isReserved: false,
       });
     } else if (type === 'VIP') {
       setFormData({
-        registrationNumber: `DEMO-VIP-${randomNum}`,
+        registrationNumber: `SAMPLE-TN23RS${randomNum}`,
         vehicleType: 'SUV',
-        driverName: 'Demo Reserved Driver',
+        driverName: 'Reserved visitor',
         contactNumber: '',
         isAccessible: false,
         isReserved: true,
       });
     } else if (type === 'BIKE') {
       setFormData({
-        registrationNumber: `DEMO-BIKE-${randomNum}`,
+        registrationNumber: `SAMPLE-TN23BK${randomNum}`,
         vehicleType: 'Bike',
-        driverName: 'Demo Bike Driver',
+        driverName: 'Bike visitor',
         contactNumber: '',
         isAccessible: false,
         isReserved: false,
       });
     } else {
       setFormData({
-        registrationNumber: `DEMO-CAR-${randomNum}`,
+        registrationNumber: `SAMPLE-TN23CA${randomNum}`,
         vehicleType: 'Car',
-        driverName: 'Demo Car Driver',
+        driverName: 'Car visitor',
         contactNumber: '',
         isAccessible: false,
         isReserved: false,

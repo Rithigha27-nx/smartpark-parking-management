@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { INITIAL_SLOTS } from '../data/initialSlots';
-import { DEMO_VEHICLES, DEMO_WAITING_QUEUE, DEMO_TRANSACTIONS } from '../data/demoData';
+import {
+  SAMPLE_VEHICLES,
+  SAMPLE_WAITING_QUEUE,
+  SAMPLE_TRANSACTIONS,
+  getSampleDriverFromLegacy,
+  getSampleRegistrationFromLegacy,
+} from '../data/demoData';
 import { MinHeap } from '../dsa/MinHeap';
 import { CircularQueue } from '../dsa/CircularQueue';
 import { HashTable } from '../dsa/HashTable';
@@ -22,7 +28,7 @@ const DEFAULT_SETTINGS = {
   facilityName: 'Vellore Central Parking Facility',
   facilityCode: 'VLR-PARK-01',
   facilityLocation: 'Vellore, Tamil Nadu, India',
-  operatorName: 'Demo Operator',
+  operatorName: 'Arjun Kumar',
   operatorRole: 'Parking Administrator',
   shift: 'General Operations Shift',
   capacity: 30,
@@ -35,7 +41,21 @@ export function ParkingProvider({ children }) {
   const [settings, setSettings] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-      return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+      if (!saved) return DEFAULT_SETTINGS;
+
+      const savedSettings = JSON.parse(saved);
+      if (!savedSettings || typeof savedSettings !== 'object' || Array.isArray(savedSettings)) {
+        return DEFAULT_SETTINGS;
+      }
+
+      return {
+        ...DEFAULT_SETTINGS,
+        ...savedSettings,
+        operatorName:
+          !savedSettings.operatorName || savedSettings.operatorName === 'Demo Operator'
+            ? DEFAULT_SETTINGS.operatorName
+            : savedSettings.operatorName,
+      };
     } catch {
       return DEFAULT_SETTINGS;
     }
@@ -45,13 +65,36 @@ export function ParkingProvider({ children }) {
   const [slots, setSlots] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.SLOTS);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const savedSlots = JSON.parse(saved);
+        if (Array.isArray(savedSlots)) {
+          return savedSlots.map((slot) => {
+            if (!slot.vehicle) return slot;
+
+            const registrationNumber = getSampleRegistrationFromLegacy(
+              slot.vehicle.registrationNumber
+            );
+            const driverName = getSampleDriverFromLegacy(slot.vehicle.driverName);
+            if (!registrationNumber && !driverName) return slot;
+
+            return {
+              ...slot,
+              vehicle: {
+                ...slot.vehicle,
+                ...(registrationNumber && { registrationNumber }),
+                ...(driverName && { driverName }),
+              },
+            };
+          });
+        }
+        return savedSlots;
+      }
     } catch {
       // ignore
     }
-    // Initialize with demo data pre-assigned to make the system realistic on first run
+    // Initialize sample vehicles on first run.
     const baseSlots = JSON.parse(JSON.stringify(INITIAL_SLOTS));
-    DEMO_VEHICLES.forEach((veh) => {
+    SAMPLE_VEHICLES.forEach((veh) => {
       const slot = baseSlots.find((s) => s.id === veh.slotId);
       if (slot) {
         slot.status = 'occupied';
@@ -65,22 +108,62 @@ export function ParkingProvider({ children }) {
   const [waitingQueueItems, setWaitingQueueItems] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.QUEUE);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const savedQueue = JSON.parse(saved);
+        if (Array.isArray(savedQueue)) {
+          return savedQueue.map((vehicle) => {
+            const registrationNumber = getSampleRegistrationFromLegacy(
+              vehicle.registrationNumber
+            );
+            const driverName = getSampleDriverFromLegacy(vehicle.driverName);
+            if (!registrationNumber && !driverName) return vehicle;
+
+            return {
+              ...vehicle,
+              ...(registrationNumber && { registrationNumber }),
+              ...(driverName && { driverName }),
+            };
+          });
+        }
+        return savedQueue;
+      }
     } catch {
       // ignore
     }
-    return DEMO_WAITING_QUEUE;
+    return SAMPLE_WAITING_QUEUE;
   });
 
   // Transactions History
   const [transactions, setTransactions] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const savedTransactions = JSON.parse(saved);
+        if (Array.isArray(savedTransactions)) {
+          return savedTransactions.map((transaction) => {
+            const registrationNumber = getSampleRegistrationFromLegacy(
+              transaction.registrationNumber
+            );
+            const isLegacySampleTransaction =
+              /^DEMO-EXIT-\d{2}$/.test(transaction.registrationNumber || '') &&
+              transaction.operator === 'Demo Operator';
+            if (!registrationNumber && !isLegacySampleTransaction) return transaction;
+
+            return {
+              ...transaction,
+              ...(registrationNumber && { registrationNumber }),
+              ...(isLegacySampleTransaction && {
+                operator: DEFAULT_SETTINGS.operatorName,
+              }),
+            };
+          });
+        }
+        return savedTransactions;
+      }
     } catch {
       // ignore
     }
-    return DEMO_TRANSACTIONS;
+    return SAMPLE_TRANSACTIONS;
   });
 
   // Notifications / Activity Alerts
@@ -90,21 +173,21 @@ export function ParkingProvider({ children }) {
       id: 'act-1',
       type: 'ENTRY',
       title: 'Vehicle Allocated',
-      description: 'DEMO-PARK-12 assigned to Slot B08 (Distance: 48m)',
+      description: 'SAMPLE · TN 23 AB 1012 assigned to Slot B08 (Distance: 48m)',
       timestamp: new Date(Date.now() - 25 * 60000).toISOString(),
     },
     {
       id: 'act-2',
       type: 'EXIT',
       title: 'Vehicle Exited',
-      description: 'DEMO-EXIT-01 cleared Slot A02. Fee ₹80 collected via UPI.',
+      description: 'SAMPLE · TN 23 AB 2001 cleared Slot A02. Fee ₹80 collected via UPI.',
       timestamp: new Date(Date.now() - 40 * 60000).toISOString(),
     },
     {
       id: 'act-3',
       type: 'QUEUE',
       title: 'Vehicle Enqueued',
-      description: 'DEMO-QUEUE-01 joined Waiting Queue at Pos #1',
+      description: 'Lavanya Natarajan joined the sample waiting queue at Pos #1',
       timestamp: new Date(Date.now() - 18 * 60000).toISOString(),
     },
   ]);
@@ -618,9 +701,9 @@ export function ParkingProvider({ children }) {
   /**
    * Reset data to realistic demo operational state
    */
-  const loadDemoData = useCallback(() => {
+  const loadSampleData = useCallback(() => {
     const baseSlots = JSON.parse(JSON.stringify(INITIAL_SLOTS));
-    DEMO_VEHICLES.forEach((veh) => {
+    SAMPLE_VEHICLES.forEach((veh) => {
       const slot = baseSlots.find((s) => s.id === veh.slotId);
       if (slot) {
         slot.status = 'occupied';
@@ -628,9 +711,9 @@ export function ParkingProvider({ children }) {
       }
     });
     setSlots(baseSlots);
-    setWaitingQueueItems(DEMO_WAITING_QUEUE);
-    setTransactions(DEMO_TRANSACTIONS);
-    addNotification('Vellore Central operational demo dataset successfully loaded.', 'success');
+    setWaitingQueueItems(SAMPLE_WAITING_QUEUE);
+    setTransactions(SAMPLE_TRANSACTIONS);
+    addNotification('Sample parking records loaded successfully.', 'success');
   }, [addNotification]);
 
   // -------------------------------------------------------------
@@ -698,7 +781,7 @@ export function ParkingProvider({ children }) {
     addNotification,
     removeNotification,
     resetToEmpty,
-    loadDemoData,
+    loadSampleData,
   };
 
   return <ParkingContext.Provider value={value}>{children}</ParkingContext.Provider>;

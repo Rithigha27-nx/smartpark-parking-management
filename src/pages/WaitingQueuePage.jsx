@@ -200,7 +200,7 @@ export default function WaitingQueuePage() {
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, driverName: e.target.value }))
                   }
-                  placeholder="Demo Driver"
+                  placeholder="Driver name"
                   className="w-full px-3 py-1.5 bg-[#1E293B] text-[#F8FAFC] placeholder-[#94A3B8] border border-[#334155] rounded-md focus:outline-none focus:ring-1 focus:ring-[#FBBF24] focus:border-[#FBBF24]"
                 />
               </div>
