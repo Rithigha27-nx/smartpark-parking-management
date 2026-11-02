@@ -181,4 +181,6 @@ There is currently no automated test script in `package.json`.
 
 ## Team members
 
-- [Name to be added]
+- S. Rithigha Shri
+- Shahana S S
+- Pavithra M
